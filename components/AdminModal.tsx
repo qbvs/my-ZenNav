@@ -17,6 +17,7 @@ const AdminModal: React.FC<AdminModalProps> = ({ isOpen, onClose, config, onSave
   const [activeTab, setActiveTab] = useState<number>(-1); // -1 for Global, -2 for Sync, 0+ for Categories
   const [analyzing, setAnalyzing] = useState<string | null>(null);
   const [showPassword, setShowPassword] = useState(false);
+  const [isSaving, setIsSaving] = useState(false);
   
   // Drag and Drop State
   const [draggedCatIdx, setDraggedCatIdx] = useState<number | null>(null);
@@ -31,28 +32,39 @@ const AdminModal: React.FC<AdminModalProps> = ({ isOpen, onClose, config, onSave
   useEffect(() => {
     setLocalConfig(config);
     setGithubToken(getGithubToken());
+    setSyncStatus('idle');
+    setSyncMessage('');
   }, [config, isOpen]);
 
   if (!isOpen) return null;
 
   const handleSave = async () => {
-    // Save locally first
+    setIsSaving(true);
+    
+    // 1. Save locally immediately
     onSave(localConfig);
 
-    // If token exists, try to auto-push
+    // 2. Auto-sync to Cloud if token exists
     if (githubToken) {
-       // We don't block the UI close for this, but could show a toast in a real app
        try {
-         const gist = await syncService.findGist(githubToken);
-         if (gist) {
-           await syncService.updateGist(githubToken, gist.id, localConfig);
-           console.log("Auto-synced to cloud");
+         // Determine if we need to create or update
+         const existingGist = await syncService.findGist(githubToken);
+         
+         if (existingGist) {
+           await syncService.updateGist(githubToken, existingGist.id, localConfig);
+           console.log("Auto-sync: Updated existing Gist");
+         } else {
+           await syncService.createGist(githubToken, localConfig);
+           console.log("Auto-sync: Created new Gist");
          }
        } catch (e) {
          console.error("Auto-sync failed", e);
+         // We alert the user but still close because local save succeeded
+         alert("本地保存成功，但云端同步失败，请检查网络或 Token。");
        }
     }
 
+    setIsSaving(false);
     onClose();
   };
 
@@ -270,9 +282,11 @@ const AdminModal: React.FC<AdminModalProps> = ({ isOpen, onClose, config, onSave
             </button>
             <button
                 onClick={handleSave}
-                className="flex items-center px-4 py-2 text-sm font-bold text-white bg-indigo-600 rounded-lg hover:bg-indigo-700 transition shadow-lg shadow-indigo-500/20"
+                disabled={isSaving}
+                className="flex items-center px-4 py-2 text-sm font-bold text-white bg-indigo-600 rounded-lg hover:bg-indigo-700 transition shadow-lg shadow-indigo-500/20 disabled:opacity-70 disabled:cursor-wait"
             >
-                <Save size={16} className="mr-2" /> 保存并关闭
+                {isSaving ? <Loader2 size={16} className="mr-2 animate-spin" /> : <Save size={16} className="mr-2" />}
+                {isSaving ? '同步中...' : '保存并关闭'}
             </button>
           </div>
         </div>
@@ -412,10 +426,9 @@ const AdminModal: React.FC<AdminModalProps> = ({ isOpen, onClose, config, onSave
                     </div>
 
                     <div className="bg-indigo-50 dark:bg-indigo-900/10 p-4 rounded-xl text-sm text-indigo-700 dark:text-indigo-300 leading-relaxed mb-6">
-                        <p className="font-bold mb-1">🔥 如何实现多设备同步？</p>
-                        <p>1. 在 GitHub 生成一个 <code>Personal Access Token (Classic)</code>，勾选 <code>gist</code> 权限。</p>
-                        <p>2. 将 Token 粘贴在下方并保存。</p>
-                        <p>3. 点击“上传”备份当前配置，在其他设备输入相同 Token 点击“下载”即可恢复。</p>
+                        <p className="font-bold mb-1">🔥 自动同步已开启</p>
+                        <p>只要您在此处配置了 Token，每次修改内容并点击 <b>“保存并关闭”</b> 时，系统都会自动将最新配置同步到云端。</p>
+                        <p>在新设备上，只需输入 Token 并点击“下载”即可恢复数据。</p>
                     </div>
 
                     <div className="bg-white dark:bg-slate-800 p-5 rounded-2xl border border-slate-200 dark:border-slate-700 shadow-sm space-y-4">
@@ -445,7 +458,7 @@ const AdminModal: React.FC<AdminModalProps> = ({ isOpen, onClose, config, onSave
                                 className="flex-1 py-3 bg-indigo-600 hover:bg-indigo-700 disabled:bg-indigo-400 text-white rounded-xl font-bold transition flex items-center justify-center shadow-lg shadow-indigo-500/20"
                             >
                                 {syncStatus === 'loading' ? <Loader2 className="animate-spin mr-2" /> : <Cloud className="mr-2" />}
-                                上传到云端 (Push)
+                                手动上传 (覆盖云端)
                             </button>
                             <button
                                 onClick={handlePullFromCloud}
@@ -453,7 +466,7 @@ const AdminModal: React.FC<AdminModalProps> = ({ isOpen, onClose, config, onSave
                                 className="flex-1 py-3 bg-white dark:bg-slate-700 border border-slate-200 dark:border-slate-600 hover:bg-slate-50 dark:hover:bg-slate-600 text-slate-700 dark:text-slate-200 rounded-xl font-bold transition flex items-center justify-center"
                             >
                                 {syncStatus === 'loading' ? <Loader2 className="animate-spin mr-2" /> : <RefreshCw className="mr-2" />}
-                                从云端下载 (Pull)
+                                手动下载 (覆盖本地)
                             </button>
                         </div>
 
