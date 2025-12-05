@@ -1,11 +1,122 @@
-<div align="center">
+# ZenNav - 个人静态导航站
 
-<img width="1200" height="475" alt="GHBanner" src="https://github.com/user-attachments/assets/0aa67016-6eaf-458a-adb2-6e31a0763ed6" />
+ZenNav 是一个高性能、设计现代的个人导航仪表盘。它内置了极光流体背景特效、毛玻璃拟态 UI，并集成了 Google Gemini AI，能够自动分析链接并生成标题、描述及图标。
 
-  <h1>Built with AI Studio</h2>
+## ✨ 核心特性
 
-  <p>The fastest path from prompt to production with Gemini.</p>
+- **🎨 极致设计:** 采用极简主义、毛玻璃特效 (Glassmorphism)、深色/浅色模式无缝切换以及响应式布局。
+- **☁️ 云端同步:** 内置 GitHub Gist 同步功能，支持**多设备数据共享**。
+- **🔍 智能搜索:** 聚合 Google、百度、Bing、GitHub 多引擎，支持**站内即时过滤**搜索，快速找到你的收藏。
+- **⚡️ 极致性能:** 基于 Vite, React 18 和 Tailwind CSS 构建，轻量且迅速。
+- **🛠 内置 CMS:** 提供客户端后台管理界面 (Client-side Admin)，支持拖拽排序。
+- **🤖 AI 增强:** 利用 Gemini API 智能分析 URL，一键自动填充网站标题、简介并匹配图标。
 
-  <a href="https://aistudio.google.com/apps">Start building</a>
+## 🚀 快速开始
 
-</div>
+### 环境要求
+
+- Node.js 18+
+- 一个 Google Gemini API Key (用于 AI 智能识别功能)
+
+### 安装步骤
+
+1.  克隆仓库到本地。
+2.  安装依赖:
+    ```bash
+    npm install
+    ```
+3.  创建 `.env` 文件 (本地开发用):
+    ```
+    API_KEY=你的_GOOGLE_GEMINI_API_KEY
+    ADMIN_PASSWORD=admin
+    ```
+
+### 本地开发
+
+启动极速开发服务器:
+
+```bash
+npm run dev
+```
+
+## ☁️ 多设备数据同步 (详细指南)
+
+ZenNav 使用 GitHub 的 Gist 服务作为免费的“云数据库”，让您在不同设备（家里电脑、公司电脑、手机）之间同步所有导航链接。
+
+### 第一步：获取 GitHub Access Token
+
+为了安全地读写数据，我们需要申请一个 Token。请严格按照以下步骤操作：
+
+1.  **进入创建页面**:
+    - 登录您的 GitHub 账号。
+    - 访问 [GitHub Settings > Developer settings > Personal access tokens](https://github.com/settings/tokens)。
+    - 点击右上角的 **"Generate new token"** 按钮。
+    - **【重要】** 在下拉菜单中选择 **"Generate new token (classic)"** (传统模式)。不要选择 Fine-grained。
+
+2.  **配置 Token 参数 (对照您看到的页面)**:
+    - **Note (备注)**: 给它起个名字，例如输入 `ZenNav Sync`，方便日后识别。
+    - **Expiration (过期时间)**: 默认是 30 Days。
+        - 💡 **强烈建议选择 "No expiration" (永不过期)**。
+        - *原因：如果 Token 过期，您的同步功能会突然失效，需要重新生成并配置所有设备。*
+    - **Select scopes (选择权限)**:
+        - 向下滚动列表。
+        - 找到 **`gist`** (Create gists) 这一项。
+        - **✅ 勾选它**。
+        - *其他所有选项都不需要勾选。*
+
+3.  **生成并复制**:
+    - 滚动到页面最底部，点击绿色按钮 **"Generate token"**。
+    - 页面刷新后，您会看到一串以 `ghp_` 开头的字符。
+    - **⚠️ 立即复制保存它！** (GitHub 只会显示这一次，刷新页面后就再也看不到了)。
+
+### 第二步：在 ZenNav 中配置
+
+1.  打开 ZenNav 网站，点击右上角的 **锁形图标** 🔐 进入后台。
+2.  点击左侧侧边栏的 **"☁️ 云端同步"** 菜单。
+3.  在 **"GitHub Access Token"** 输入框中，粘贴您刚才复制的 `ghp_xxxx...` 字符串。
+4.  点击 **"保存"**。
+
+### 第三步：如何使用同步
+
+-   **上传 (Push)**: 当您在当前设备修改了链接配置后，点击 **"上传到云端"**。这会将当前配置备份到 GitHub。
+-   **下载 (Pull)**: 在新设备上配置好 Token 后，点击 **"从云端下载"**。这会覆盖当前设备的配置，使其与云端保持一致。
+
+## ☁️ Vercel 部署指南
+
+本项目已针对 Vercel 进行了完全优化。
+
+1.  **推送到 GitHub:**
+    将本项目代码提交到你的 GitHub 仓库。
+
+2.  **导入到 Vercel:**
+    - 登录 [Vercel Dashboard](https://vercel.com/dashboard)。
+    - 点击 **"Add New..."** -> **"Project"**。
+    - 找到并点击 **"Import"** 你的 GitHub 仓库。
+
+3.  **构建配置 (Build Settings):**
+    Vercel 通常会自动检测 Vite 框架，默认设置即可：
+    - **Framework Preset:** `Vite`
+    - **Build Command:** `npm run build`
+    - **Output Directory:** `dist`
+
+4.  **环境变量 (Environment Variables):**
+    在部署页面的 **"Environment Variables"** 区域添加：
+    
+    | 变量名 (Key) | 描述 | 示例值 |
+    | :--- | :--- | :--- |
+    | `API_KEY` | **(必填)** Google Gemini API Key | `AIzaSyD...` |
+    | `ADMIN_PASSWORD` | (可选) 后台管理密码，默认为 admin | `MySecretPass123` |
+
+5.  **部署:** 点击 **Deploy**。
+
+## 🛠 技术栈
+
+- **构建工具:** Vite
+- **前端框架:** React 18, TypeScript
+- **样式库:** Tailwind CSS
+- **AI 支持:** Google GenAI SDK
+- **数据同步:** GitHub Gist API
+- **图标库:** Lucide React
+
+---
+*Design by ZenNav Team*
