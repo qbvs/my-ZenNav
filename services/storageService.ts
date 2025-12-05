@@ -37,7 +37,7 @@ export const saveStoredTheme = (theme: 'light' | 'dark') => {
 };
 
 export const getGithubToken = () => {
-  return localStorage.getItem(GITHUB_TOKEN_KEY) || '';
+  return localStorage.getItem(GITHUB_TOKEN_KEY) || process.env.GITHUB_TOKEN || '';
 };
 
 export const saveGithubToken = (token: string) => {

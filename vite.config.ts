@@ -13,7 +13,8 @@ export default defineConfig(({ mode }) => {
       // Polyfill process.env for client-side code
       // This picks up variables from .env file (local) or Cloudflare/Vercel Environment Variables (production)
       'process.env.API_KEY': JSON.stringify(env.API_KEY),
-      'process.env.ADMIN_PASSWORD': JSON.stringify(env.ADMIN_PASSWORD)
+      'process.env.ADMIN_PASSWORD': JSON.stringify(env.ADMIN_PASSWORD),
+      'process.env.GITHUB_TOKEN': JSON.stringify(env.GITHUB_TOKEN)
     }
   };
 });

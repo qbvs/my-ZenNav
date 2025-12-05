@@ -16,7 +16,8 @@ ZenNav 是一个高性能、设计现代的个人导航仪表盘。它内置了�
 ### 环境要求
 
 - Node.js 18+
-- 一个 Google Gemini API Key (用于 AI 智能识别功能)
+- Google Gemini API Key (用于 AI 智能识别)
+- GitHub Access Token (用于数据同步，可选)
 
 ### 安装步骤
 
@@ -29,6 +30,7 @@ ZenNav 是一个高性能、设计现代的个人导航仪表盘。它内置了�
     ```
     API_KEY=你的_GOOGLE_GEMINI_API_KEY
     ADMIN_PASSWORD=admin
+    GITHUB_TOKEN=你的_GITHUB_TOKEN
     ```
 
 ### 本地开发
@@ -69,17 +71,22 @@ ZenNav 使用 GitHub 的 Gist 服务作为免费的“云数据库”，让您�
     - 页面刷新后，您会看到一串以 `ghp_` 开头的字符。
     - **⚠️ 立即复制保存它！** (GitHub 只会显示这一次，刷新页面后就再也看不到了)。
 
-### 第二步：在 ZenNav 中配置
+### 第二步：配置 Token
 
+有两种方式配置 Token：
+
+**方式 A：通过环境变量 (推荐)**
+在部署时（如 Vercel 后台），将 Token 设置为环境变量 `GITHUB_TOKEN`。这样所有访问该部署版本的设备都会默认使用该 Token，无需手动输入。
+
+**方式 B：手动输入**
 1.  打开 ZenNav 网站，点击右上角的 **锁形图标** 🔐 进入后台。
 2.  点击左侧侧边栏的 **"☁️ 云端同步"** 菜单。
-3.  在 **"GitHub Access Token"** 输入框中，粘贴您刚才复制的 `ghp_xxxx...` 字符串。
-4.  点击 **"保存"**。
+3.  在 **"GitHub Access Token"** 输入框中，粘贴您的 `ghp_xxxx...` 字符串并保存。
 
 ### 第三步：如何使用同步
 
--   **上传 (Push)**: 当您在当前设备修改了链接配置后，点击 **"上传到云端"**。这会将当前配置备份到 GitHub。
--   **下载 (Pull)**: 在新设备上配置好 Token 后，点击 **"从云端下载"**。这会覆盖当前设备的配置，使其与云端保持一致。
+-   **自动同步**: 只要配置了 Token，每次在后台**保存**修改时，ZenNav 会自动将最新配置备份到云端。
+-   **手动下载**: 在新设备上打开网站，进入后台的“云端同步”页面，点击 **"手动下载 (Pull)"** 即可恢复所有数据。
 
 ## ☁️ Vercel 部署指南
 
@@ -106,6 +113,7 @@ ZenNav 使用 GitHub 的 Gist 服务作为免费的“云数据库”，让您�
     | :--- | :--- | :--- |
     | `API_KEY` | **(必填)** Google Gemini API Key | `AIzaSyD...` |
     | `ADMIN_PASSWORD` | (可选) 后台管理密码，默认为 admin | `MySecretPass123` |
+    | `GITHUB_TOKEN` | (可选) GitHub Token，用于自动配置同步 | `ghp_xxxxxxxx...` |
 
 5.  **部署:** 点击 **Deploy**。
 
