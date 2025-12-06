@@ -132,5 +132,4 @@ ZenNav 使用 GitHub 的 Gist 服务作为免费的“云数据库”，让您�
 - **图标库:** Lucide React
 
 ---
-*Design by ZenNav Team*
 *Design by Qbvs Team*
