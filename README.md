@@ -116,7 +116,7 @@ ZenNav 使用 GitHub 的 Gist 服务作为免费的“云数据库”，让您�
     
     | 变量名 (Key) | 描述 | 示例值 |
     | :--- | :--- | :--- |
-    | `API_KEY` | **(必填)** Google Gemini API Key | `AIzaSyD...` |
+    | `API_KEY` | (可选) Google Gemini API Key | `AIzaSyD...` |
     | `ADMIN_PASSWORD` | (可选) 后台管理密码，默认为 admin | `MySecretPass123` |
     | `GITHUB_TOKEN` | (可选) GitHub Token，用于自动配置同步 | `ghp_xxxxxxxx...` |
 
