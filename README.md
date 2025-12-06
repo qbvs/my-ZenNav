@@ -1,6 +1,7 @@
 # ZenNav - 个人静态导航站
 
 ZenNav 是一个高性能、设计现代的个人导航仪表盘。它内置了极光流体背景特效、毛玻璃拟态 UI，并集成了 Google Gemini AI，能够自动分析链接并生成标题、描述及图标。
+<img width="1420" height="787" alt="image" src="https://github.com/user-attachments/assets/1fb72353-9298-46c0-a142-45b12a302615" />
 
 ## ✨ 核心特性
 
