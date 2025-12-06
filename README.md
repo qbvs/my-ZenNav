@@ -34,7 +34,7 @@ ZenNav 是一个高性能、设计现代的个人导航仪表盘。它内置了�
 3.  创建 `.env` 文件 (本地开发用):
     ```
     API_KEY=你的_GOOGLE_GEMINI_API_KEY
-    ADMIN_PASSWORD=admin
+    ADMIN_PASSWORD=你的_xxxxx{密码自己设置}
     GITHUB_TOKEN=你的_GITHUB_TOKEN
     ```
 
